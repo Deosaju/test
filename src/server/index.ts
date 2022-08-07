@@ -5,7 +5,7 @@ import {
   openAboutSidebar,
 } from './ui';
 
-import { getSheetsData, addSheet, deleteSheet, setActiveSheet } from './sheets';
+import { getSheetsData, addSheet, deleteSheet, setActiveSheet, uploadImage, folder} from './sheets';
 
 // Public functions must be exported as named exports
 export {
@@ -17,4 +17,6 @@ export {
   addSheet,
   deleteSheet,
   setActiveSheet,
+  uploadImage,
+  folder
 };

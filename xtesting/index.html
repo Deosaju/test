@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <base target="_top">
+  </head>
+  <body>
+    <h1>Uploading Multiple Files to Google Drive with Google App Script</h1>
+    
+    <div>
+        <label for="CustomerName">Customer Name:</label>
+        <input type="text" id="CustomerName" name="Customer Name" required>
+        <br/>
+        <label for="AlbumTitle">Album Title:</label>
+        <input type="text" id="AlbumTitle" name="Album Title">
+        <br/>
+        <label for="SalesOrderNumber">Sales Order Number:</label>
+        <input type="text" id="SalesOrderNumber" name="SalesOrderNumber">
+        <br/>
+        <input type="file" name="filesToUpload" id="filesToUpload" multiple>
+        <input type="button" value="Submit" onclick="uploadFiles()">
+    
+    <br />
+    <div id="output"></div>
+    </div>
+    
+    
+   <?!= include('Script'); ?>
+  </body>
+</html>
+
+<script>
+    var rootFolderId = '1fjNDMduWVcwD822yRAmML2JcJGJyZ0Ek';
+    var numUploads = {};
+    numUploads.done = 0;
+    numUploads.total = 0;
+    var folderName = 'Demo';
+    function uploadFiles() {
+     var  folderName =document.getElementById('CustomerName').value;
+        var allFiles = document.getElementById('filesToUpload').files;
+          
+        
+        if (allFiles.length == 0) {
+            window.alert('No file selected!');
+        } else {
+            numUploads.total = allFiles.length;
+            google.script.run.withSuccessHandler(createFolder_withSuccessHandler).createFolder(rootFolderId, folderName);
+        }
+    }
+    function createFolder_withSuccessHandler(data){
+        var allFiles = document.getElementById('filesToUpload').files;
+        for (var i = 0; i < allFiles.length; i++) {						
+                    uploadFile(allFiles[i], data.folderId);
+                }
+    }
+    function uploadFile(file, folderId) {
+        var reader = new FileReader();
+        reader.onload = function(e) {
+            var content = reader.result;
+            document.getElementById('output').innerHTML = 'uploading '
+                    + file.name + '...';					
+            google.script.run.withSuccessHandler(onFileUploaded)
+                    .uploadFile(content, file.name, folderId);
+        }
+        reader.readAsDataURL(file);
+    }
+    function onFileUploaded(r) {
+        numUploads.done++;
+        document.getElementById('output').innerHTML = 'uploaded '
+                + r.fileName + ' (' + numUploads.done + '/'
+                + numUploads.total + ' files).';
+        if (numUploads.done == numUploads.total) {
+            document.getElementById('output').innerHTML = 'All of the '
+                    + numUploads.total + ' files are uploaded';
+            numUploads.done = 0;
+        }
+    }	
+</script>

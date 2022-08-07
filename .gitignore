@@ -17,4 +17,4 @@ dist/
 #secret
 .env
 
-git auth.txt
+package-lock.json
